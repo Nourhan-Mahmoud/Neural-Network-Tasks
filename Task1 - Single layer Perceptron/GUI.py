@@ -50,9 +50,98 @@ with st.container():
         number_of_epochs= st.number_input('Number Of Epochs: ')
         bias = st.checkbox('Add Bias') 
         st.write('##') 
-        if st.button('Train and Test SLP Model'):
-            st.write('Done!') 
         
     with r:
         st_lottie(penguin_animation, height=300,width=400,key = 'Cute Penguin')
 
+
+
+#### Implementaion#### 
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def signum(x):
+    if x >= 0:
+        return 1
+    else:
+        return -1
+def perceptron(x, w, b):
+    return signum(np.dot(w, x) + b)
+def normalizeData(data : pd.DataFrame):
+    data = np.abs(data - data.mean()) / data.std()
+    return data
+data = pd.read_csv('penguins.csv')
+
+
+# PreProcessing
+data[['bill_length_mm', 'bill_depth_mm', 'flipper_length_mm',
+      'body_mass_g']] = data[['bill_length_mm', 'bill_depth_mm', 'flipper_length_mm',
+                              'body_mass_g']].apply(lambda x: normalizeData(x))
+data.gender.fillna(data.gender.mode()[0],inplace=True)
+data.gender.unique()
+
+
+#encode male to 0 and female to 1
+gender_dict ={"male":1,"female":0}
+data.gender = data.gender.apply(lambda x: gender_dict[x])
+
+
+# Train Test Split
+def splitData(data):
+    data = data.sample(frac=1).reset_index(drop=True)
+    train_data = data[:int(len(data)*0.2)]
+    test_data = data[int(len(data)*0.3):]
+    return train_data,test_data
+
+train_df,test_df = splitData(data)
+
+
+# Model
+def train(data,epoch,learning_rate,feature1,feature2,class1,class2,isBias):
+    w = np.array([0, 0])
+    b = 0
+    data=data[[feature1,feature2,"species"]]
+    data = data[(data.species == class1) | (data.species == class2)]
+    print(data.species.unique())
+    data = data.reset_index(drop=True)
+    data[[feature1,feature2]] = data[[feature1,feature2]].apply(lambda x: normalizeData(x))
+    species_dict = {class1:1,class2:-1}
+    data.species = data.species.apply(lambda x: species_dict[x])
+    for _ in range(epoch):
+        for index, row in data.iterrows():
+            x = np.array(row)
+            y = x[2]
+            x = x[0:2]
+            if y * perceptron(x, w, b) <= 0:
+                w = w + learning_rate * y * x
+                if isBias:
+                    b = b + learning_rate * y
+    return w,b
+
+
+
+def test(data,feature1,feature2,class1,class2,w,b):
+    data=data[[feature1,feature2,"species"]]
+    data = data[(data.species == class1) | (data.species == class2)]
+    data = data.reset_index(drop=True)
+    data[[feature1,feature2]] = data[[feature1,feature2]].apply(lambda x: normalizeData(x))
+    species_dict = {class1:1,class2:-1}
+    data.species = data.species.apply(lambda x: species_dict[x])
+    correct = 0
+    for index, row in data.iterrows():
+        x = np.array(row)
+        y = x[2]
+        x = x[0:2]
+        if y * perceptron(x, w, b) > 0:
+            correct += 1
+    return correct/len(data)
+
+
+
+ww = train(train_df,int(number_of_epochs),learning_rate,option1_feature,option2_feature,option1_class,option2_class,bias)
+
+
+if st.button('Train and Test SLP Model'):
+    st.write('weights : ',ww) 
