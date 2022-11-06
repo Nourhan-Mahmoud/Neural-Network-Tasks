@@ -1,6 +1,5 @@
 # Use streamlit for GUI
 import warnings
-
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -225,7 +224,7 @@ def confusion_matrix(actual, predictions):
 
 
 ##############################
-data = pd.read_csv("penguins.csv")
+ddata = pd.read_csv("penguins.csv")
 data = normalizeData(data)
 data.gender.fillna(data.gender.describe().top, inplace=True)
 data.gender.replace({"male": 1, "female": 0}, inplace=True)
@@ -241,4 +240,9 @@ cm = confusion_matrix(actual, predictions)
 #sns.heatmap(cm, annot=True)
 
 if st.button('Train and Test SLP Model'):
+    st.write('Classes : ', option1_class, ' and ', option2_class)
+    st.write('Features : ', option1_feature, ' and ', option2_feature)
+    st.write('With Learning Rate: ', learning_rate)
+    st.write('With Number Of Epochs: ', int(number_of_epochs))
     st.write('Accuracy : ', acc)
+    st.write('Confusion Matrix : [[TN, FP],[FN, TP]]', cm)
