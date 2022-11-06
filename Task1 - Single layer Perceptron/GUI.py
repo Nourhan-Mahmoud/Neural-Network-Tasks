@@ -224,7 +224,7 @@ def confusion_matrix(actual, predictions):
 
 
 ##############################
-ddata = pd.read_csv("penguins.csv")
+data = pd.read_csv("penguins.csv")
 data = normalizeData(data)
 data.gender.fillna(data.gender.describe().top, inplace=True)
 data.gender.replace({"male": 1, "female": 0}, inplace=True)
@@ -245,4 +245,4 @@ if st.button('Train and Test SLP Model'):
     st.write('With Learning Rate: ', learning_rate)
     st.write('With Number Of Epochs: ', int(number_of_epochs))
     st.write('Accuracy : ', acc)
-    st.write('Confusion Matrix : [[TN, FP],[FN, TP]]', cm)
+    st.write('Confusion Matrix : [[TN, FP],[FN, TP]]', str(cm))
