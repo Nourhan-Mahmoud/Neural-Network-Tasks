@@ -1,5 +1,6 @@
 # Use streamlit for GUI
 import warnings
+
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -224,7 +225,7 @@ def confusion_matrix(actual, predictions):
 
 
 ##############################
-ddata = pd.read_csv("penguins.csv")
+data = pd.read_csv("penguins.csv")
 data = normalizeData(data)
 data.gender.fillna(data.gender.describe().top, inplace=True)
 data.gender.replace({"male": 1, "female": 0}, inplace=True)
