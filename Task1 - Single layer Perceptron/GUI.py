@@ -224,22 +224,23 @@ def confusion_matrix(actual, predictions):
 
 
 ##############################
-data = pd.read_csv("penguins.csv")
-data = normalizeData(data)
-data.gender.fillna(data.gender.describe().top, inplace=True)
-data.gender.replace({"male": 1, "female": 0}, inplace=True)
-cols = data.columns.to_list()
-cols.remove("species")
-two_F_graph(data, option1_feature, option2_feature, option1_class,
-            option2_class, int(number_of_epochs), learning_rate, bias, c_line=False)
-acc, actual, predictions = two_F_graph(data, option1_feature, option2_feature, option1_class, option2_class, int(
-    number_of_epochs), learning_rate, bias, c_line=True)
-cm = confusion_matrix(actual, predictions)
+
 #print("[[TN, FP],[FN, TP]]")
 # print(cm)
 #sns.heatmap(cm, annot=True)
 
 if st.button('Train and Test SLP Model'):
+    data = pd.read_csv("penguins.csv")
+    data = normalizeData(data)
+    data.gender.fillna(data.gender.describe().top, inplace=True)
+    data.gender.replace({"male": 1, "female": 0}, inplace=True)
+    cols = data.columns.to_list()
+    cols.remove("species")
+    two_F_graph(data, option1_feature, option2_feature, option1_class,
+                option2_class, int(number_of_epochs), learning_rate, bias, c_line=False)
+    acc, actual, predictions = two_F_graph(data, option1_feature, option2_feature, option1_class, option2_class, int(
+        number_of_epochs), learning_rate, bias, c_line=True)
+    cm = confusion_matrix(actual, predictions)
     st.write('Classes : ', option1_class, ' and ', option2_class)
     st.write('Features : ', option1_feature, ' and ', option2_feature)
     st.write('With Learning Rate: ', learning_rate)
