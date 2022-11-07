@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 import requests
+import seaborn as sns
 from streamlit_lottie import st_lottie
 
 st.set_page_config(page_title='SLP', page_icon=':star:')
@@ -156,7 +157,7 @@ def plot_data(y1, y2, x1, x2, w, b, x1label, x2label, cls1, cls2):
     plt.xlabel(x1label)
     plt.ylabel(x2label)
     plt.legend(labels=[cls1, cls2], loc='upper left')
-    plt.show()
+    st.pyplot(plt)
 
 
 def plot_data_withoutLine(y1, y2, x1, x2, x1label, x2label, cls1, cls2):
@@ -220,6 +221,14 @@ def confusion_matrix(actual, predictions):
                 fn += 1
 
     cm = [[tn, fp], [fn, tp]]
+    #plot confusion matrix
+
+    df_cm = pd.DataFrame(cm, index=[i for i in ["Actual Negative", "Actual Positive"]],
+                            columns=[i for i in ["Predicted Negative", "Predicted Positive"]])
+    plt.figure(figsize=(10, 7))
+    sns.heatmap(df_cm, annot=True)
+    st.pyplot(plt)
+
     return cm
 
 
